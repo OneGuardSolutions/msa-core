@@ -124,7 +124,7 @@
             <id>travis</id>
             <activation>
                 <property>
-                    <name>env.TRAVIS</name>
+                    <name>env.COVERALLS_TOKEN</name>
                     <value>true</value>
                 </property>
             </activation>
@@ -149,7 +149,7 @@
                         <artifactId>coveralls-maven-plugin</artifactId>
                         <version>4.3.0</version>
                         <configuration>
-                            <repoToken>${env.TRAVIS}</repoToken>
+                            <repoToken>${env.COVERALLS_TOKEN}</repoToken>
                         </configuration>
                         <dependencies>
                             <dependency>
