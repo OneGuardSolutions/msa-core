@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  solutions.oneguard.msa.core.configuration.AmqpConfiguration,\
+  solutions.oneguard.msa.core.configuration.InstanceConfiguration
