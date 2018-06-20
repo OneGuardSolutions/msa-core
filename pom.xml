@@ -11,6 +11,29 @@
 
     <name>Micro-service Architecture Core library</name>
     <description>Library for building micro-services based on AMQP inter-service communication</description>
+    <url>https://github.com/OneGuardSolutions/msa-core</url>
+
+    <organization>
+        <name>OneGuard, s.r.o.</name>
+        <url>https://github.com/OneGuardSolutions</url>
+    </organization>
+
+    <scm>
+        <url>https://github.com/OneGuardSolutions/msa-core</url>
+        <connection>git://git@github.com:OneGuardSolutions/msa-core.git</connection>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Tomáš Pecsérke</name>
+            <email>tomas.pecserke@oneguard.email</email>
+            <url>https://github.com/tomas-pecserke</url>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -87,7 +110,58 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>travis</id>
+            <activation>
+                <property>
+                    <name>env.TRAVIS</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.1</version>
+                        <executions>
+                            <execution>
+                                <id>prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.eluder.coveralls</groupId>
+                        <artifactId>coveralls-maven-plugin</artifactId>
+                        <version>4.3.0</version>
+                        <configuration>
+                            <repoToken>${env.TRAVIS}</repoToken>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>javax.xml.bind</groupId>
+                                <artifactId>jaxb-api</artifactId>
+                                <version>2.3.0</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
