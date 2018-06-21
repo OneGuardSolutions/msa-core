@@ -2,10 +2,10 @@ package solutions.oneguard.msa.core.messaging;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import solutions.oneguard.msa.core.model.Message;
 
-@Component
+@Service
 public class MessageConsumer {
     private static final Logger logger = LoggerFactory.getLogger(MessageConsumer.class);
 
