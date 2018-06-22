@@ -12,6 +12,7 @@ package solutions.oneguard.msa.core.messaging;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import solutions.oneguard.msa.core.model.Message;
 
 import java.util.Collection;

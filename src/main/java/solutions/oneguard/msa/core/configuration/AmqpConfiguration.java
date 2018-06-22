@@ -24,6 +24,7 @@ import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import solutions.oneguard.msa.core.messaging.MessageConsumer;
 import solutions.oneguard.msa.core.messaging.MessageHandler;
 import solutions.oneguard.msa.core.messaging.MessageProducer;

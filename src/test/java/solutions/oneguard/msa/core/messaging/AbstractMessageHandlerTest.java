@@ -10,6 +10,7 @@
 package solutions.oneguard.msa.core.messaging;
 
 import org.junit.Test;
+
 import solutions.oneguard.msa.core.model.Message;
 
 import static org.junit.Assert.assertEquals;
