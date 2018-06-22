@@ -13,6 +13,8 @@ import solutions.oneguard.msa.core.model.Message;
 
 public interface MessageHandler <T> {
     String getMessageType();
+
     Class<T> getMessageClass();
+
     void handleMessage(T payload, Message originalMessage);
 }
