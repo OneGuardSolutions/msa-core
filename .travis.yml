@@ -1,4 +1,5 @@
 language: java
+sudo: false
 
 jdk:
   - oraclejdk9
@@ -13,11 +14,15 @@ matrix:
 
 cache:
   directories:
-    - $HOME/.m2
+    - "$HOME/.m2"
 
 env:
   global:
-    secure: Ud4Dv+0AwQEZ718aco1UQUgzAgEiUz4xT5IvKccS63lJu9de4Sj9upXTkNs2u7T6CtFEe06mjGDYWmN1HdkL8FEdRkM2PeLMtJaMUvghd//x1XcIv8PWzHYADmejpP18quS9CvR3gfKbf6r5WxplauRrdr0vvsj2lR/dU3S0lkziNIQeFkp0rHpY9CuoHTApWM059F1xnUVh+QSWvh62fSDYaQeId5IBt/WA76GShDkOO0kZYHK90Lya6EOIfX620fqsH7S1PJKJrV1ABf7sL8FCmmsYrzM/6913igzsj5OVVQ//Li21cMFVSKobSGVNPkyWvOVi7MMU24jylet6i6SQjkDO36rl6CZvy2XmkLnUoaePH1X+4kZdmFcn4YPx/cW0CS2eQnt5+0C02mUszjXaGSU6/qWnpDOvcffuGlPj22eVm//oRlsyzQEwIiV/4ULpG5/y++WLhudM6eKFJLbuOG7MKuqWEMz8iPKhuBQE1DkqOpBrsKYKu4Idc7CxhC5jTu+0+vLpueaFaCKJQ+aCVFSq/SU7oTwqYWQTDGgpnvYTz/eYKr8bKww+Im9YUB2ey6A5q7c9S2H9s0MO5sMX/U4ABtq6NgxEZbr9iqfETy633QTzLcWxonrWgbrcldkHmoWikhF6pgpu42S8IgkuC46yLDDr+Chu6WnHpOI=
+    - secure: Ud4Dv+0AwQEZ718aco1UQUgzAgEiUz4xT5IvKccS63lJu9de4Sj9upXTkNs2u7T6CtFEe06mjGDYWmN1HdkL8FEdRkM2PeLMtJaMUvghd//x1XcIv8PWzHYADmejpP18quS9CvR3gfKbf6r5WxplauRrdr0vvsj2lR/dU3S0lkziNIQeFkp0rHpY9CuoHTApWM059F1xnUVh+QSWvh62fSDYaQeId5IBt/WA76GShDkOO0kZYHK90Lya6EOIfX620fqsH7S1PJKJrV1ABf7sL8FCmmsYrzM/6913igzsj5OVVQ//Li21cMFVSKobSGVNPkyWvOVi7MMU24jylet6i6SQjkDO36rl6CZvy2XmkLnUoaePH1X+4kZdmFcn4YPx/cW0CS2eQnt5+0C02mUszjXaGSU6/qWnpDOvcffuGlPj22eVm//oRlsyzQEwIiV/4ULpG5/y++WLhudM6eKFJLbuOG7MKuqWEMz8iPKhuBQE1DkqOpBrsKYKu4Idc7CxhC5jTu+0+vLpueaFaCKJQ+aCVFSq/SU7oTwqYWQTDGgpnvYTz/eYKr8bKww+Im9YUB2ey6A5q7c9S2H9s0MO5sMX/U4ABtq6NgxEZbr9iqfETy633QTzLcWxonrWgbrcldkHmoWikhF6pgpu42S8IgkuC46yLDDr+Chu6WnHpOI=
+    - secure: VnNMAV+SxzgMJ3+9q6YNaNDnhqad2c4Ma8SwZh1DywR7AYCmTIvJiF4kXu5xEf8YuHi7AGfViYJ/H/YXt1KLpGy8MC0JCFgYQy8YY7807jIIw539JTDWbe0X5GKGe91dryyfv4TDKi/kLb4zJn8zRqVLiMdWOG5V2cRrlDTOOQgBs9oF8iePm5C+WLfAcFjnLPAi1e8bBK2Q0r0gQb/1yBhDrKz1CjUrl8tNFrORwXma/MxMI1AIGTdNq86nx3NtGVqkqE+WOO1CsgD3qovYBhaBc4kpKfSR+7m1Kurs4R9lRRUi9QtPypfHVd0ptG/JQwTt1vRUQfsuh/XwUrf4DK7kg0zuCF+8JxU/TGE4s5K9LxaSPu6C/F6eSi9ZNiAAY5POdWiZMc2U5UOMUd2JKmnXHRMh5WY2xPPsjOfm1VedGrikNap4Dj7X6v0LcURJCTO9NwjtdCJt31DIDFHX1Ugjqx/wCQqyGsm9Dm5ZuEIKvM4hZwmFYyeRki+LRtgTc/w+VJizWNv2nvfA+r+kaeyXxsgsaBBNLHBBOoe7Py/01MeZ0042WyWpbGaqvjtNB818sljx5e1R0+G80huBW/0kRPiBbmejM/m4Ri5KU8KP4hP3tH9UioKCfENmCBRjTpm5qs6A/Q9Ae/kb4bMr3J062D9f4J2VZpEHehKu+DY=
+
+services:
+  - rabbitmq
 
 install: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -P travis
 
@@ -25,3 +30,10 @@ script: mvn verify -B -P travis
 
 after_success:
   - mvn jacoco:report coveralls:report -P travis
+
+deploy:
+  provider: script
+  script: cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy
+  skip_cleanup: true
+  on:
+    tags: true

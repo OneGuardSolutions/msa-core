@@ -15,12 +15,13 @@
 
     <organization>
         <name>OneGuard, s.r.o.</name>
-        <url>https://github.com/OneGuardSolutions</url>
+        <url>https://oneguard.solutions/</url>
     </organization>
 
     <scm>
         <url>https://github.com/OneGuardSolutions/msa-core</url>
         <connection>git://git@github.com:OneGuardSolutions/msa-core.git</connection>
+        <developerConnection>git://git@github.com:OneGuardSolutions/msa-core.git</developerConnection>
     </scm>
 
     <developers>
@@ -118,7 +119,26 @@
                 <version>3.0.0</version>
             </plugin>
         </plugins>
+
+        <extensions>
+            <extension>
+                <groupId>io.packagecloud.maven.wagon</groupId>
+                <artifactId>maven-packagecloud-wagon</artifactId>
+                <version>0.0.6</version>
+            </extension>
+        </extensions>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>packagecloud-oneguard</id>
+            <url>packagecloud+https://packagecloud.io/oneguard/msa</url>
+        </repository>
+        <snapshotRepository>
+            <id>packagecloud-oneguard</id>
+            <url>packagecloud+https://packagecloud.io/oneguard/msa</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <profiles>
         <profile>

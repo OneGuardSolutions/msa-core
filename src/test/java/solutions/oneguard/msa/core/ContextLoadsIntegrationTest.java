@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-package solutions.oneguard.msa.core.configuration;
+package solutions.oneguard.msa.core;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest("oneguard.msa.service.name=test")
-public class InstanceConfigurationTest {
+public class ContextLoadsIntegrationTest {
     @Autowired
     private Instance instance;
 
@@ -33,5 +33,6 @@ public class InstanceConfigurationTest {
     }
 
     @SpringBootApplication
-    static class TestConfiguration {}
+    public static class TestConfiguration {
+    }
 }
