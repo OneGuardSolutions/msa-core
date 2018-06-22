@@ -45,7 +45,7 @@ public class MessageConsumerTest {
     }
 
     @Test
-    public void constuctor() {
+    public void constructor() {
         TestHandler<String> handler1 = new TestHandler<>("test.message.1", String.class);
         TestHandler<String> handler2 = new TestHandler<>("test.message.1", String.class);
 

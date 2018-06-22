@@ -22,7 +22,7 @@ public class Message {
     private Object payload;
 
     @Builder.Default
-    private Date occuredAt = new Date();
+    private Date occurredAt = new Date();
 
     private Object reference;
 
