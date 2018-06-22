@@ -29,14 +29,14 @@ public class MessageProducerTest {
     private static final Message message = Message.builder().type("test.message").build();
 
     private MessageProducer producer;
-    private RabbitTemplate serviveTemplate;
+    private RabbitTemplate serviceTemplate;
     private RabbitTemplate instanceTemplate;
 
     @Before
     public void setUp() {
-        serviveTemplate = Mockito.mock(RabbitTemplate.class);
+        serviceTemplate = Mockito.mock(RabbitTemplate.class);
         instanceTemplate = Mockito.mock(RabbitTemplate.class);
-        producer = new MessageProducer(serviveTemplate, instanceTemplate);
+        producer = new MessageProducer(serviceTemplate, instanceTemplate);
 
     }
 
@@ -45,7 +45,7 @@ public class MessageProducerTest {
         Instance instance = new Instance(TEST_SERVICE, UUID.randomUUID());
         producer.sendToService(instance, message);
 
-        verify(serviveTemplate).convertAndSend(Utils.serviceTopic(TEST_SERVICE), message.getType(), message);
+        verify(serviceTemplate).convertAndSend(Utils.serviceTopic(TEST_SERVICE), message.getType(), message);
     }
 
     @Test
@@ -53,21 +53,21 @@ public class MessageProducerTest {
         Instance instance = new Instance(TEST_SERVICE, UUID.randomUUID());
         producer.sendToService(instance, message, ROUTING_KEY);
 
-        verify(serviveTemplate).convertAndSend(Utils.serviceTopic(TEST_SERVICE), ROUTING_KEY, message);
+        verify(serviceTemplate).convertAndSend(Utils.serviceTopic(TEST_SERVICE), ROUTING_KEY, message);
     }
 
     @Test
     public void sendToServiceAsString() {
         producer.sendToService(TEST_SERVICE, message);
 
-        verify(serviveTemplate).convertAndSend(Utils.serviceTopic(TEST_SERVICE), message.getType(), message);
+        verify(serviceTemplate).convertAndSend(Utils.serviceTopic(TEST_SERVICE), message.getType(), message);
     }
 
     @Test
     public void sendToServiceAsStringWithRoutingKey() {
         producer.sendToService(TEST_SERVICE, message, ROUTING_KEY);
 
-        verify(serviveTemplate).convertAndSend(Utils.serviceTopic(TEST_SERVICE), ROUTING_KEY, message);
+        verify(serviceTemplate).convertAndSend(Utils.serviceTopic(TEST_SERVICE), ROUTING_KEY, message);
     }
 
     @Test
