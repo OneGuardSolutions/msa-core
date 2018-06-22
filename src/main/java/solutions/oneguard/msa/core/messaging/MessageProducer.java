@@ -10,6 +10,7 @@
 package solutions.oneguard.msa.core.messaging;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+
 import solutions.oneguard.msa.core.model.Instance;
 import solutions.oneguard.msa.core.model.Message;
 import solutions.oneguard.msa.core.util.Utils;

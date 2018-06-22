@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
 import solutions.oneguard.msa.core.model.Message;
 
 import java.util.Arrays;

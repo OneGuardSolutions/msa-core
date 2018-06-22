@@ -1,6 +1,7 @@
 package solutions.oneguard.msa.core.util;
 
 import org.junit.Test;
+
 import solutions.oneguard.msa.core.model.Instance;
 
 import java.util.UUID;
