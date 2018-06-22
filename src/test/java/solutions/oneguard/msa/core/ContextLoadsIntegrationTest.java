@@ -21,7 +21,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest("oneguard.msa.service.name=test")
+@SpringBootTest({
+    "oneguard.msa.service.name=test",
+    "spring.main.banner-mode=off"
+})
 public class ContextLoadsIntegrationTest {
     @Autowired
     private Instance instance;
