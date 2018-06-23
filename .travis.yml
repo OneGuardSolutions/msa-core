@@ -26,7 +26,7 @@ services:
 
 install: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -P travis
 
-script: mvn verify -B -P travis
+script: travis_retry mvn verify -B -P travis
 
 after_success:
   - mvn jacoco:report coveralls:report -P travis

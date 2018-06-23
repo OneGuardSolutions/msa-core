@@ -24,6 +24,7 @@ public class MessageConsumer {
 
     private final Map<String, MessageHandler> handlers = new HashMap<>();
     private final ObjectMapper objectMapper;
+    private MessageHandler defaultHandler;
 
     public MessageConsumer(ObjectMapper objectMapper, Collection<MessageHandler> handlers) {
         this.objectMapper = objectMapper;
@@ -38,11 +39,18 @@ public class MessageConsumer {
         }
     }
 
+    public void setDefaultHandler(MessageHandler defaultHandler) {
+        this.defaultHandler = defaultHandler;
+    }
+
     public void handleMessage(Message message) {
         MessageHandler handler = handlers.get(message.getType());
         if (handler == null) {
-            logger.info("Received message with no handler: <{}>", message);
-            return;
+            if (defaultHandler == null) {
+                logger.info("Received message with no handler: <{}>", message);
+                return;
+            }
+            handler = defaultHandler;
         }
 
         //noinspection unchecked
