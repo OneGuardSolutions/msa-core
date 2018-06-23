@@ -56,6 +56,17 @@ public class MessageConsumerTest {
         new MessageConsumer(new ObjectMapper(), Arrays.asList(handler1, handler2));
     }
 
+    @Test
+    public void setDefaultHandler() {
+        TestHandler<String> handler = new TestHandler<>(null, String.class);
+        MessageConsumer consumer = new MessageConsumer(new ObjectMapper(), Collections.emptyList());
+        consumer.setDefaultHandler(handler);
+
+        consumer.handleMessage(Message.builder().type("test.message.missing").payload("testPayload").build());
+
+        assertEquals("testPayload", handler.getPayload());
+    }
+
     private static class TestHandler <T> extends AbstractMessageHandler<T> {
         private T payload;
 
