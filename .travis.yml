@@ -33,7 +33,8 @@ after_success:
 
 deploy:
   provider: script
-  script: cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy
+  script: cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy -DskipTests=true
   skip_cleanup: true
   on:
     tags: true
+    branch: master
