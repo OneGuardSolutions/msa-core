@@ -16,10 +16,8 @@ import org.junit.rules.ExpectedException;
 
 import solutions.oneguard.msa.core.model.Message;
 
-import java.util.Arrays;
-import java.util.Collections;
-
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class MessageConsumerTest {
     @Rule
@@ -27,9 +25,11 @@ public class MessageConsumerTest {
 
     @Test
     public void handleMessage() {
-        TestHandler<String> handler1 = new TestHandler<>("test.message.1", String.class);
-        TestHandler<String> handler2 = new TestHandler<>("test.message.2", String.class);
-        MessageConsumer consumer = new MessageConsumer(new ObjectMapper(), Arrays.asList(handler1, handler2));
+        TestHandler<String> handler1 = new TestHandler<>(String.class);
+        TestHandler<String> handler2 = new TestHandler<>(String.class);
+        MessageConsumer consumer = new MessageConsumer(new ObjectMapper());
+        consumer.addHandler("test.message.1", handler1);
+        consumer.addHandler("test.message.2", handler2);
 
         consumer.handleMessage(Message.builder().type("test.message.1").payload("testPayload1").build());
         consumer.handleMessage(Message.builder().type("test.message.2").payload("testPayload2").build());
@@ -40,26 +40,29 @@ public class MessageConsumerTest {
 
     @Test
     public void handleMessageNoHandler() {
-        MessageConsumer consumer = new MessageConsumer(new ObjectMapper(), Collections.emptyList());
+        MessageConsumer consumer = new MessageConsumer(new ObjectMapper());
 
         consumer.handleMessage(Message.builder().type("test.message").build());
     }
 
     @Test
     public void constructor() {
-        TestHandler<String> handler1 = new TestHandler<>("test.message.1", String.class);
-        TestHandler<String> handler2 = new TestHandler<>("test.message.1", String.class);
+        TestHandler<String> handler1 = new TestHandler<>(String.class);
+        TestHandler<String> handler2 = new TestHandler<>(String.class);
+        MessageConsumer consumer = new MessageConsumer(new ObjectMapper());
+        consumer.addHandler("test.message.1", handler1);
+        consumer.addHandler("test.message.1", handler2);
 
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("Handler already registered for 'test.message.1'");
+        consumer.handleMessage(Message.builder().type("test.message.1").payload("testPayload1").build());
 
-        new MessageConsumer(new ObjectMapper(), Arrays.asList(handler1, handler2));
+        assertEquals("testPayload1", handler1.getPayload());
+        assertNull(handler2.getPayload());
     }
 
     @Test
     public void setDefaultHandler() {
-        TestHandler<String> handler = new TestHandler<>(null, String.class);
-        MessageConsumer consumer = new MessageConsumer(new ObjectMapper(), Collections.emptyList());
+        TestHandler<String> handler = new TestHandler<>(String.class);
+        MessageConsumer consumer = new MessageConsumer(new ObjectMapper());
         consumer.setDefaultHandler(handler);
 
         consumer.handleMessage(Message.builder().type("test.message.missing").payload("testPayload").build());
@@ -70,8 +73,8 @@ public class MessageConsumerTest {
     private static class TestHandler <T> extends AbstractMessageHandler<T> {
         private T payload;
 
-        TestHandler(String messageType, Class<T> messageClass) {
-            super(messageType, messageClass);
+        TestHandler(Class<T> messageClass) {
+            super(messageClass);
         }
 
         @Override

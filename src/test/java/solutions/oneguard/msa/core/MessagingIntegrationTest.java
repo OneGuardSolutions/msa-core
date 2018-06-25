@@ -16,10 +16,13 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import solutions.oneguard.msa.core.messaging.AbstractMessageHandler;
+import solutions.oneguard.msa.core.messaging.MessageConsumerConfiguration;
 import solutions.oneguard.msa.core.messaging.MessageProducer;
 import solutions.oneguard.msa.core.model.Instance;
 import solutions.oneguard.msa.core.model.Message;
@@ -61,13 +64,14 @@ public class MessagingIntegrationTest {
     }
 
     @SpringBootApplication
+    @Configuration
     public static class TestConfiguration {
         @Component
         public static class TestHandler extends AbstractMessageHandler<TestPayload> {
             private TestPayload payload;
 
             public TestHandler() {
-                super(TEST_MSG_TYPE, TestPayload.class);
+                super(TestPayload.class);
             }
 
             @Override
@@ -78,6 +82,12 @@ public class MessagingIntegrationTest {
             TestPayload getPayload() {
                 return payload;
             }
+        }
+
+        @Bean
+        public MessageConsumerConfiguration messageConsumerConfiguration(TestHandler testHandler) {
+            return new MessageConsumerConfiguration()
+                .addHandler(TEST_MSG_TYPE, testHandler);
         }
     }
 

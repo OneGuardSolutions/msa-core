@@ -37,4 +37,4 @@ deploy:
   skip_cleanup: true
   on:
     jdk: 'oraclejdk9'
-    condition: $TRAVIS_BRANCH = master || -n ${TRAVIS_TAG+x}
+    condition: $TRAVIS_PULL_REQUEST == “false” && $TRAVIS_BRANCH == “master” ||  -n ${TRAVIS_TAG+x}
