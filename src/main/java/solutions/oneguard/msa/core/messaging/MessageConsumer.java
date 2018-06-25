@@ -10,7 +10,6 @@
 package solutions.oneguard.msa.core.messaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,12 +17,11 @@ import solutions.oneguard.msa.core.model.Message;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class MessageConsumer {
     private static final Logger logger = LoggerFactory.getLogger(MessageConsumer.class);
 
-    private final List<Pair<Pattern, MessageHandler>> handlers = new LinkedList<>();
+    private final List<MessageHandlerMapping> handlers = new LinkedList<>();
     private final ObjectMapper objectMapper;
     private MessageHandler defaultHandler;
 
@@ -32,7 +30,7 @@ public class MessageConsumer {
     }
 
     public void addHandler(String pattern, MessageHandler handler) {
-        this.handlers.add(new Pair<>(Pattern.compile(pattern), handler));
+        this.handlers.add(new MessageHandlerMapping(pattern, handler));
     }
 
     public void setDefaultHandler(MessageHandler defaultHandler) {
@@ -41,9 +39,8 @@ public class MessageConsumer {
 
     public void handleMessage(Message message) {
         MessageHandler handler = handlers.stream().filter(
-            pair -> pair.getKey().matcher(message.getType()).matches()
-        ).findFirst().map(Pair::getValue).orElse(defaultHandler);
-
+            mapping -> mapping.getPattern().matches(message.getType())
+        ).findFirst().map(MessageHandlerMapping::getHandler).orElse(defaultHandler);
 
         if (handler == null) {
             logger.info("Received message with no handler: <{}>", message);
@@ -57,4 +54,21 @@ public class MessageConsumer {
         );
     }
 
+    public static final class MessageHandlerMapping {
+        private final String pattern;
+        private final MessageHandler handler;
+
+        MessageHandlerMapping(String pattern, MessageHandler handler) {
+            this.pattern = pattern;
+            this.handler = handler;
+        }
+
+        String getPattern() {
+            return pattern;
+        }
+
+        MessageHandler getHandler() {
+            return handler;
+        }
+    }
 }

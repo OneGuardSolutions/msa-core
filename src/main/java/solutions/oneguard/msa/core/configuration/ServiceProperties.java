@@ -15,7 +15,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @ConfigurationProperties(prefix = "oneguard.msa.service")
 public class ServiceProperties {
-    /** Name of the service - used for exchange name */
+    /** Name of the service. */
     private String name;
 
     public String getName() {

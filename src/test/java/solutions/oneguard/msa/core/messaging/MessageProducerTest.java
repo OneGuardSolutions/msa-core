@@ -30,14 +30,13 @@ public class MessageProducerTest {
     private static final Message message = Message.builder().type("test.message").build();
 
     private MessageProducer producer;
-    private RabbitTemplate serviceTemplate;
-    private RabbitTemplate instanceTemplate;
+    private RabbitTemplate template;
 
     @Before
     public void setUp() {
-        serviceTemplate = Mockito.mock(RabbitTemplate.class);
-        instanceTemplate = Mockito.mock(RabbitTemplate.class);
-        producer = new MessageProducer(serviceTemplate, instanceTemplate);
+        template = Mockito.mock(RabbitTemplate.class);
+        template = Mockito.mock(RabbitTemplate.class);
+        producer = new MessageProducer(template);
 
     }
 
@@ -46,7 +45,7 @@ public class MessageProducerTest {
         Instance instance = new Instance(TEST_SERVICE, UUID.randomUUID());
         producer.sendToService(instance, message);
 
-        verify(serviceTemplate).convertAndSend(Utils.serviceTopic(TEST_SERVICE), message.getType(), message);
+        verify(template).convertAndSend(Utils.serviceTopic(TEST_SERVICE), message.getType(), message);
     }
 
     @Test
@@ -54,21 +53,21 @@ public class MessageProducerTest {
         Instance instance = new Instance(TEST_SERVICE, UUID.randomUUID());
         producer.sendToService(instance, message, ROUTING_KEY);
 
-        verify(serviceTemplate).convertAndSend(Utils.serviceTopic(TEST_SERVICE), ROUTING_KEY, message);
+        verify(template).convertAndSend(Utils.serviceTopic(TEST_SERVICE), ROUTING_KEY, message);
     }
 
     @Test
     public void sendToServiceAsString() {
         producer.sendToService(TEST_SERVICE, message);
 
-        verify(serviceTemplate).convertAndSend(Utils.serviceTopic(TEST_SERVICE), message.getType(), message);
+        verify(template).convertAndSend(Utils.serviceTopic(TEST_SERVICE), message.getType(), message);
     }
 
     @Test
     public void sendToServiceAsStringWithRoutingKey() {
         producer.sendToService(TEST_SERVICE, message, ROUTING_KEY);
 
-        verify(serviceTemplate).convertAndSend(Utils.serviceTopic(TEST_SERVICE), ROUTING_KEY, message);
+        verify(template).convertAndSend(Utils.serviceTopic(TEST_SERVICE), ROUTING_KEY, message);
     }
 
     @Test
@@ -76,7 +75,7 @@ public class MessageProducerTest {
         Instance instance = new Instance(TEST_SERVICE, UUID.randomUUID());
         producer.sendToInstance(instance, message);
 
-        verify(instanceTemplate).convertAndSend(Utils.instanceTopic(instance), message.getType(), message);
+        verify(template).convertAndSend(Utils.instanceTopic(instance), message.getType(), message);
     }
 
     @Test
@@ -84,20 +83,20 @@ public class MessageProducerTest {
         Instance instance = new Instance(TEST_SERVICE, UUID.randomUUID());
         producer.sendToInstance(instance, message, ROUTING_KEY);
 
-        verify(instanceTemplate).convertAndSend(Utils.instanceTopic(instance), ROUTING_KEY, message);
+        verify(template).convertAndSend(Utils.instanceTopic(instance), ROUTING_KEY, message);
     }
 
     @Test
     public void sendToInstanceAsStrings() {
         producer.sendToInstance(TEST_SERVICE, TEST_INSTANCE, message);
 
-        verify(instanceTemplate).convertAndSend(Utils.instanceTopic(TEST_SERVICE, TEST_INSTANCE), message.getType(), message);
+        verify(template).convertAndSend(Utils.instanceTopic(TEST_SERVICE, TEST_INSTANCE), message.getType(), message);
     }
 
     @Test
     public void sendToInstanceAsStringsWithRoutingKey() {
         producer.sendToInstance(TEST_SERVICE, TEST_INSTANCE, message, ROUTING_KEY);
 
-        verify(instanceTemplate).convertAndSend(Utils.instanceTopic(TEST_SERVICE, TEST_INSTANCE), ROUTING_KEY, message);
+        verify(template).convertAndSend(Utils.instanceTopic(TEST_SERVICE, TEST_INSTANCE), ROUTING_KEY, message);
     }
 }

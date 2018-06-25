@@ -16,12 +16,10 @@ import solutions.oneguard.msa.core.model.Message;
 import solutions.oneguard.msa.core.util.Utils;
 
 public class MessageProducer {
-    private final RabbitTemplate serviceTemplate;
-    private final RabbitTemplate instanceTemplate;
+    private final RabbitTemplate template;
 
-    public MessageProducer(RabbitTemplate serviceTemplate, RabbitTemplate instanceTemplate) {
-        this.serviceTemplate = serviceTemplate;
-        this.instanceTemplate = instanceTemplate;
+    public MessageProducer(RabbitTemplate template) {
+        this.template = template;
     }
 
     public void sendToInstance(Instance instance, Message message) {
@@ -37,7 +35,7 @@ public class MessageProducer {
     }
 
     public void sendToInstance(String serviceName, String instanceId, Message message, String routingKey) {
-        instanceTemplate.convertAndSend(Utils.instanceTopic(serviceName, instanceId), routingKey, message);
+        template.convertAndSend(Utils.instanceTopic(serviceName, instanceId), routingKey, message);
     }
 
     public void sendToService(Instance instance, Message message) {
@@ -53,6 +51,6 @@ public class MessageProducer {
     }
 
     public void sendToService(String serviceName, Message message, String routingKey) {
-        serviceTemplate.convertAndSend(Utils.serviceTopic(serviceName), routingKey, message);
+        template.convertAndSend(Utils.serviceTopic(serviceName), routingKey, message);
     }
 }
