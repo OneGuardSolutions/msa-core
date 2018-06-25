@@ -20,18 +20,17 @@ import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import solutions.oneguard.msa.core.messaging.MessageConsumer;
-import solutions.oneguard.msa.core.messaging.MessageHandler;
+import solutions.oneguard.msa.core.messaging.MessageConsumerConfiguration;
 import solutions.oneguard.msa.core.messaging.MessageProducer;
 import solutions.oneguard.msa.core.model.Instance;
 import solutions.oneguard.msa.core.util.Utils;
 
-import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
 
 @Configuration
@@ -131,10 +130,14 @@ public class AmqpConfiguration {
     @Bean
     public MessageConsumer messageConsumer(
         ObjectMapper mapper,
-        ListableBeanFactory beanFactory
+        Optional<MessageConsumerConfiguration> configuration
     ) {
-        Collection<MessageHandler> handlers = beanFactory.getBeansOfType(MessageHandler.class).values();
+        MessageConsumer consumer = new MessageConsumer(mapper);
+        if (configuration.isPresent()) {
+            configuration.get().getHandlers().forEach(pair -> consumer.addHandler(pair.getKey(), pair.getValue()));
+            consumer.setDefaultHandler(configuration.get().getDefaultHandler());
+        }
 
-        return new MessageConsumer(mapper, handlers);
+        return consumer;
     }
 }

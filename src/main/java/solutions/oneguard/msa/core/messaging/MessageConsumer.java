@@ -10,33 +10,29 @@
 package solutions.oneguard.msa.core.messaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import solutions.oneguard.msa.core.model.Message;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class MessageConsumer {
     private static final Logger logger = LoggerFactory.getLogger(MessageConsumer.class);
 
-    private final Map<String, MessageHandler> handlers = new HashMap<>();
+    private final List<Pair<Pattern, MessageHandler>> handlers = new LinkedList<>();
     private final ObjectMapper objectMapper;
     private MessageHandler defaultHandler;
 
-    public MessageConsumer(ObjectMapper objectMapper, Collection<MessageHandler> handlers) {
+    public MessageConsumer(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
+    }
 
-        for (MessageHandler handler : handlers) {
-            if (this.handlers.containsKey(handler.getMessageType())) {
-                throw new IllegalArgumentException(
-                    String.format("Handler already registered for '%s'", handler.getMessageType())
-                );
-            }
-            this.handlers.put(handler.getMessageType(), handler);
-        }
+    public void addHandler(String pattern, MessageHandler handler) {
+        this.handlers.add(new Pair<>(Pattern.compile(pattern), handler));
     }
 
     public void setDefaultHandler(MessageHandler defaultHandler) {
@@ -44,13 +40,14 @@ public class MessageConsumer {
     }
 
     public void handleMessage(Message message) {
-        MessageHandler handler = handlers.get(message.getType());
+        MessageHandler handler = handlers.stream().filter(
+            pair -> pair.getKey().matcher(message.getType()).matches()
+        ).findFirst().map(Pair::getValue).orElse(defaultHandler);
+
+
         if (handler == null) {
-            if (defaultHandler == null) {
-                logger.info("Received message with no handler: <{}>", message);
-                return;
-            }
-            handler = defaultHandler;
+            logger.info("Received message with no handler: <{}>", message);
+            return;
         }
 
         //noinspection unchecked
@@ -59,4 +56,5 @@ public class MessageConsumer {
             message
         );
     }
+
 }
