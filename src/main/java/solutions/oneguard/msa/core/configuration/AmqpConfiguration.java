@@ -211,7 +211,9 @@ public class AmqpConfiguration {
     ) {
         MessageConsumer consumer = new MessageConsumer(mapper);
         if (configuration.isPresent()) {
-            configuration.get().getHandlers().forEach(pair -> consumer.addHandler(pair.getKey(), pair.getValue()));
+            configuration.get().getHandlers().forEach(
+                mapping -> consumer.addHandler(mapping.getPattern(), mapping.getHandler())
+            );
             consumer.setDefaultHandler(configuration.get().getDefaultHandler());
         }
 

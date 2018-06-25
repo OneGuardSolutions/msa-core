@@ -17,6 +17,7 @@ import solutions.oneguard.msa.core.model.Message;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class MessageConsumer {
     private static final Logger logger = LoggerFactory.getLogger(MessageConsumer.class);
@@ -59,7 +60,7 @@ public class MessageConsumer {
         );
     }
 
-    static final class MessageHandlerMapping {
+    public static final class MessageHandlerMapping {
         private final String pattern;
         private final MessageHandler handler;
 
@@ -68,12 +69,32 @@ public class MessageConsumer {
             this.handler = handler;
         }
 
-        String getPattern() {
+        /**
+         * Returns matching pattern.
+         *
+         * @return matching pattern
+         */
+        public String getPattern() {
             return pattern;
         }
 
-        MessageHandler getHandler() {
+        /**
+         * Returns mapped message handler.
+         *
+         * @return message handler
+         */
+        public MessageHandler getHandler() {
             return handler;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            MessageHandlerMapping that = (MessageHandlerMapping) o;
+
+            return Objects.equals(pattern, that.pattern) &&
+                Objects.equals(handler, that.handler);
         }
     }
 }

@@ -1,6 +1,5 @@
 package solutions.oneguard.msa.core.messaging;
 
-import javafx.util.Pair;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -20,8 +19,8 @@ public class MessageConsumerConfigurationTest {
 
         assertEquals(
             Arrays.asList(
-                new Pair<>("test.1", handler1),
-                new Pair<>("test.2", handler2)
+                new MessageConsumer.MessageHandlerMapping("test.1", handler1),
+                new MessageConsumer.MessageHandlerMapping("test.2", handler2)
             ),
             configuration.getHandlers()
         );
