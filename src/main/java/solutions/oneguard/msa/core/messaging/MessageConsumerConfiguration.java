@@ -17,7 +17,7 @@ public class MessageConsumerConfiguration {
     /**
      * Add new {@link MessageHandler} mapping with message type mapping to the current configuration.
      *
-     * Message is routed to the first handler the pattern of which matches the message type.
+     * <p>Message is routed to the first handler the pattern of which matches the message type.</p>
      *
      * @param pattern message type pattern
      * @param handler message handler

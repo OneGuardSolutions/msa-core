@@ -12,9 +12,18 @@ package solutions.oneguard.msa.core.messaging;
 import solutions.oneguard.msa.core.model.Message;
 
 public interface MessageHandler <T> {
-    String getMessageType();
-
+    /**
+     * Returns the class of {@link Message} payload.
+     *
+     * @return message payload class
+     */
     Class<T> getMessageClass();
 
+    /**
+     * Handles the message.
+     *
+     * @param payload converted message payload.
+     * @param originalMessage the original message
+     */
     void handleMessage(T payload, Message originalMessage);
 }

@@ -37,6 +37,11 @@ public class MessageConsumer {
         this.defaultHandler = defaultHandler;
     }
 
+    /**
+     * Routes the message to correct {@link MessageHandler} and converts its payload to the correct type.
+     *
+     * @param message the message
+     */
     public void handleMessage(Message message) {
         MessageHandler handler = handlers.stream().filter(
             mapping -> mapping.getPattern().matches(message.getType())
@@ -54,7 +59,7 @@ public class MessageConsumer {
         );
     }
 
-    public static final class MessageHandlerMapping {
+    static final class MessageHandlerMapping {
         private final String pattern;
         private final MessageHandler handler;
 

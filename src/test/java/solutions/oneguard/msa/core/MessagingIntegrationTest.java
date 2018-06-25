@@ -71,7 +71,7 @@ public class MessagingIntegrationTest {
             private TestPayload payload;
 
             public TestHandler() {
-                super(TEST_MSG_TYPE, TestPayload.class);
+                super(TestPayload.class);
             }
 
             @Override

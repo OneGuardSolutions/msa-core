@@ -10,17 +10,10 @@
 package solutions.oneguard.msa.core.messaging;
 
 public abstract class AbstractMessageHandler <T> implements MessageHandler<T> {
-    private final String messageType;
     private final Class<T> messageClass;
 
-    public AbstractMessageHandler(String messageType, Class<T> messageClass) {
-        this.messageType = messageType;
+    public AbstractMessageHandler(Class<T> messageClass) {
         this.messageClass = messageClass;
-    }
-
-    @Override
-    public String getMessageType() {
-        return messageType;
     }
 
     @Override

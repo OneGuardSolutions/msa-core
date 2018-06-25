@@ -25,8 +25,8 @@ public class MessageConsumerTest {
 
     @Test
     public void handleMessage() {
-        TestHandler<String> handler1 = new TestHandler<>("test.message.1", String.class);
-        TestHandler<String> handler2 = new TestHandler<>("test.message.2", String.class);
+        TestHandler<String> handler1 = new TestHandler<>(String.class);
+        TestHandler<String> handler2 = new TestHandler<>(String.class);
         MessageConsumer consumer = new MessageConsumer(new ObjectMapper());
         consumer.addHandler("test.message.1", handler1);
         consumer.addHandler("test.message.2", handler2);
@@ -47,8 +47,8 @@ public class MessageConsumerTest {
 
     @Test
     public void constructor() {
-        TestHandler<String> handler1 = new TestHandler<>("test.message.1", String.class);
-        TestHandler<String> handler2 = new TestHandler<>("test.message.1", String.class);
+        TestHandler<String> handler1 = new TestHandler<>(String.class);
+        TestHandler<String> handler2 = new TestHandler<>(String.class);
         MessageConsumer consumer = new MessageConsumer(new ObjectMapper());
         consumer.addHandler("test.message.1", handler1);
         consumer.addHandler("test.message.1", handler2);
@@ -61,7 +61,7 @@ public class MessageConsumerTest {
 
     @Test
     public void setDefaultHandler() {
-        TestHandler<String> handler = new TestHandler<>(null, String.class);
+        TestHandler<String> handler = new TestHandler<>(String.class);
         MessageConsumer consumer = new MessageConsumer(new ObjectMapper());
         consumer.setDefaultHandler(handler);
 
@@ -73,8 +73,8 @@ public class MessageConsumerTest {
     private static class TestHandler <T> extends AbstractMessageHandler<T> {
         private T payload;
 
-        TestHandler(String messageType, Class<T> messageClass) {
-            super(messageType, messageClass);
+        TestHandler(Class<T> messageClass) {
+            super(messageClass);
         }
 
         @Override

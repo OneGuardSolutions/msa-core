@@ -10,14 +10,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 public class MessageConsumerConfigurationTest {
-
     @Test
     public void getHandlers() {
-        MessageConsumerConfiguration configuration = new MessageConsumerConfiguration();
         MessageHandler handler1 = Mockito.mock(MessageHandler.class);
         MessageHandler handler2 = Mockito.mock(MessageHandler.class);
-        configuration.addHandler("test.1", handler1);
-        configuration.addHandler("test.2", handler2);
+        MessageConsumerConfiguration configuration = new MessageConsumerConfiguration()
+            .addHandler("test.1", handler1)
+            .addHandler("test.2", handler2);
 
         assertEquals(
             Arrays.asList(
@@ -30,9 +29,9 @@ public class MessageConsumerConfigurationTest {
 
     @Test
     public void setDefaultHandler() {
-        MessageConsumerConfiguration configuration = new MessageConsumerConfiguration();
         MessageHandler handler = Mockito.mock(MessageHandler.class);
-        configuration.setDefaultHandler(handler);
+        MessageConsumerConfiguration configuration = new MessageConsumerConfiguration()
+            .setDefaultHandler(handler);
 
         assertSame(handler, configuration.getDefaultHandler());
     }
