@@ -17,7 +17,6 @@ import solutions.oneguard.msa.core.model.Message;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 public class MessageConsumer {
     private static final Logger logger = LoggerFactory.getLogger(MessageConsumer.class);
@@ -30,10 +29,23 @@ public class MessageConsumer {
         this.objectMapper = objectMapper;
     }
 
+    /**
+     * Add new {@link MessageHandler} mapping with message type mapping to the current configuration.
+     *
+     * <p>Message is routed to the first handler the pattern of which matches the message type.</p>
+     *
+     * @param pattern message type pattern
+     * @param handler message handler
+     */
     public void addHandler(String pattern, MessageHandler handler) {
         this.handlers.add(new MessageHandlerMapping(pattern, handler));
     }
 
+    /**
+     * Sets message handler for message to be routed to, when it matches no pattern.
+     *
+     * @param defaultHandler default message handler
+     */
     public void setDefaultHandler(MessageHandler defaultHandler) {
         this.defaultHandler = defaultHandler;
     }
@@ -58,43 +70,5 @@ public class MessageConsumer {
             objectMapper.convertValue(message.getPayload(), handler.getMessageClass()),
             message
         );
-    }
-
-    public static final class MessageHandlerMapping {
-        private final String pattern;
-        private final MessageHandler handler;
-
-        MessageHandlerMapping(String pattern, MessageHandler handler) {
-            this.pattern = pattern;
-            this.handler = handler;
-        }
-
-        /**
-         * Returns matching pattern.
-         *
-         * @return matching pattern
-         */
-        public String getPattern() {
-            return pattern;
-        }
-
-        /**
-         * Returns mapped message handler.
-         *
-         * @return message handler
-         */
-        public MessageHandler getHandler() {
-            return handler;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            MessageHandlerMapping that = (MessageHandlerMapping) o;
-
-            return Objects.equals(pattern, that.pattern) &&
-                Objects.equals(handler, that.handler);
-        }
     }
 }

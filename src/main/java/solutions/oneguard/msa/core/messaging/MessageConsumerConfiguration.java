@@ -5,10 +5,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class MessageConsumerConfiguration {
-    private final List<MessageConsumer.MessageHandlerMapping> handlers = new LinkedList<>();
+    private final List<MessageHandlerMapping> handlers = new LinkedList<>();
     private MessageHandler defaultHandler;
 
-    public List<MessageConsumer.MessageHandlerMapping> getHandlers() {
+    public List<MessageHandlerMapping> getHandlers() {
         return Collections.unmodifiableList(handlers);
     }
 
@@ -22,7 +22,7 @@ public class MessageConsumerConfiguration {
      * @return the same modified configuration
      */
     public MessageConsumerConfiguration addHandler(String pattern, MessageHandler handler) {
-        handlers.add(new MessageConsumer.MessageHandlerMapping(pattern, handler));
+        handlers.add(new MessageHandlerMapping(pattern, handler));
 
         return this;
     }

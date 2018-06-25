@@ -19,8 +19,8 @@ public class MessageConsumerConfigurationTest {
 
         assertEquals(
             Arrays.asList(
-                new MessageConsumer.MessageHandlerMapping("test.1", handler1),
-                new MessageConsumer.MessageHandlerMapping("test.2", handler2)
+                new MessageHandlerMapping("test.1", handler1),
+                new MessageHandlerMapping("test.2", handler2)
             ),
             configuration.getHandlers()
         );
