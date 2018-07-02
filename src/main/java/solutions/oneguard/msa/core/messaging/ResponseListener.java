@@ -11,18 +11,20 @@ package solutions.oneguard.msa.core.messaging;
 
 import solutions.oneguard.msa.core.model.Message;
 
-public interface MessageHandler <T> {
+interface ResponseListener <T> {
     /**
-     * Returns the class of {@link Message} payload.
+     * Called on receiving the response.
      *
-     * @return message payload class
+     * @param response response message
      */
-    Class<T> getMessageClass();
+    void onResponseReceived(Message<T> response);
 
     /**
-     * Handles the message.
+     * Called on error before or during receiving the message.
      *
-     * @param message the original message
+     * <p>Cancelling the request also causes an error.</p>
+     *
+     * @param throwable the cause
      */
-    void handleMessage(Message<T> message);
+    void onError(Throwable throwable);
 }

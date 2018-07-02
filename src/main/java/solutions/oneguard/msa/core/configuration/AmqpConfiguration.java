@@ -24,10 +24,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import solutions.oneguard.msa.core.messaging.MessageConsumer;
-import solutions.oneguard.msa.core.messaging.MessageConsumerConfiguration;
-import solutions.oneguard.msa.core.messaging.MessageHandler;
-import solutions.oneguard.msa.core.messaging.MessageProducer;
+import solutions.oneguard.msa.core.messaging.*;
 import solutions.oneguard.msa.core.model.Instance;
 import solutions.oneguard.msa.core.util.Utils;
 
@@ -117,7 +114,7 @@ public class AmqpConfiguration {
     }
 
     /**
-     * Creates an internal message listener container that subscribes to service and insance specific queues.
+     * Creates an internal message listener container that subscribes to service and instance specific queues.
      *
      * @param connectionFactory RabbitMQ connection factory
      * @param listenerAdapter custom message listener adapter
@@ -188,11 +185,12 @@ public class AmqpConfiguration {
      * to other services.
      *
      * @param template RabbitMQ template
+     * @param currentInstance current services instance representation
      * @return message producer
      */
     @Bean
-    public MessageProducer messageProducer(RabbitTemplate template) {
-        return new MessageProducer(template);
+    public MessageProducer messageProducer(RabbitTemplate template, Instance currentInstance) {
+        return new MessageProducer(template, currentInstance);
     }
 
     /**
@@ -205,11 +203,11 @@ public class AmqpConfiguration {
      */
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     @Bean
-    public MessageConsumer messageConsumer(
+    public RequestAwareMessageConsumer messageConsumer(
         ObjectMapper mapper,
         Optional<MessageConsumerConfiguration> configuration
     ) {
-        MessageConsumer consumer = new MessageConsumer(mapper);
+        RequestAwareMessageConsumer consumer = new RequestAwareMessageConsumer(mapper);
         if (configuration.isPresent()) {
             configuration.get().getHandlers().forEach(
                 mapping -> consumer.addHandler(mapping.getPattern(), mapping.getHandler())
@@ -218,5 +216,13 @@ public class AmqpConfiguration {
         }
 
         return consumer;
+    }
+
+    @Bean
+    public RequestProducer requestProducer(
+        MessageProducer producer,
+        RequestAwareMessageConsumer consumer
+    ) {
+        return new RequestProducer(producer, consumer);
     }
 }
