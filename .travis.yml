@@ -1,6 +1,13 @@
 language: java
 sudo: false
 
+jdk:
+  - oraclejdk8
+  - openjdk8
+  - oraclejdk9
+  - oraclejdk10
+  - openjdk10
+
 cache:
   directories:
     - "$HOME/.m2"
@@ -19,7 +26,6 @@ jobs:
         - oraclejdk9
         - oraclejdk10
         - openjdk10
-        - openjdk11
       services:
         - rabbitmq
       install: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -P coveralls
