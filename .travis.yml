@@ -20,12 +20,6 @@ env:
 jobs:
   include:
     - stage: test
-      jdk:
-        - oraclejdk8
-        - openjdk8
-        - oraclejdk9
-        - oraclejdk10
-        - openjdk10
       services:
         - rabbitmq
       install: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -P coveralls
