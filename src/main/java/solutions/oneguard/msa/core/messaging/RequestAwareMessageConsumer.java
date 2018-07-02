@@ -33,9 +33,13 @@ public class RequestAwareMessageConsumer extends SimpleMessageConsumer {
     }
 
     private String extractRequestIdAsString(Message message) {
-        return (message.getResponseTo() != null && message.getContext() != null) ?
-            message.getContext().get(RequestProducer.REQUEST_ID_CONTEXT_KEY).toString() :
-            null;
+        if (message.getResponseTo() == null || message.getContext() == null) {
+            return null;
+        }
+
+        Object requestId = message.getContext().get(RequestProducer.REQUEST_ID_CONTEXT_KEY);
+
+        return requestId == null ? null : requestId.toString();
     }
 
     private void handleResponse(Message message, String requestIdAsString) {
