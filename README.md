@@ -233,13 +233,13 @@ public class RequestExample {
 
 ### Unit testing the handlers
 
-TODO - write documentation
+[//]: # (TODO - write documentation)
 
 See [Example Echo service][6].
 
 ### Integration testing the application
 
-TODO - write documentation
+[//]: # (TODO - write documentation)
 
 See [Example Echo service][6].
 
