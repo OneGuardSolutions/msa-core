@@ -18,17 +18,17 @@ import static org.junit.Assert.assertNotNull;
 public class AbstractMessageHandlerTest {
     @Test
     public void getMessageClass() {
-        AbstractMessageHandler<String> handler = new AbstractMessageHandlerTestImpl<>(String.class);
+        AbstractMessageHandler<String> handler = new AbstractMessageHandlerTestImpl();
 
         assertNotNull(handler.getMessageClass());
     }
 
-    private static class AbstractMessageHandlerTestImpl <T> extends AbstractMessageHandler<T> {
-        private AbstractMessageHandlerTestImpl(Class<T> messageClass) {
-            super(messageClass);
+    private static class AbstractMessageHandlerTestImpl extends AbstractMessageHandler<String> {
+        private AbstractMessageHandlerTestImpl() {
+            super(String.class);
         }
 
         @Override
-        public void handleMessage(T payload, Message originalMessage) {}
+        public void handleMessage(Message<String> message) {}
     }
 }

@@ -12,7 +12,7 @@ package solutions.oneguard.msa.core.messaging;
 public abstract class AbstractMessageHandler <T> implements MessageHandler<T> {
     private final Class<T> messageClass;
 
-    public AbstractMessageHandler(Class<T> messageClass) {
+    protected AbstractMessageHandler(Class<T> messageClass) {
         this.messageClass = messageClass;
     }
 

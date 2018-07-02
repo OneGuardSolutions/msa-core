@@ -18,16 +18,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import solutions.oneguard.msa.core.messaging.AbstractMessageHandler;
 import solutions.oneguard.msa.core.messaging.MessageConsumerConfiguration;
 import solutions.oneguard.msa.core.messaging.MessageProducer;
 import solutions.oneguard.msa.core.model.Instance;
 import solutions.oneguard.msa.core.model.Message;
-
-import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -44,56 +40,61 @@ public class MessagingIntegrationTest {
     private MessageProducer producer;
 
     @Autowired
-    private TestConfiguration.TestHandler handler;
+    private TestHandler<ComplexTestPayload> handler;
 
     @Autowired
     private Instance instance;
 
     @Test
     public void handleMessage() throws InterruptedException {
+        ComplexTestPayload payload = new ComplexTestPayload();
+        payload.setTestPayload(new TestPayload());
+        payload.getTestPayload().setStringProperty("testValue");
+        payload.getTestPayload().setIntProperty(12);
+
         producer.sendToInstance(instance, Message.builder()
             .type(TEST_MSG_TYPE)
             .issuer(instance)
-            .payload(Collections.singletonMap("testProperty", "testValue"))
+            .payload(payload)
             .build()
         );
-        Thread.sleep(500);
 
-        assertNotNull(handler.getPayload());
-        assertEquals("testValue", handler.getPayload().getTestProperty());
+        for (int i = 0; i < 500; i++) {
+            Thread.sleep(10);
+            if (handler.getMessage() != null) {
+                break;
+            }
+        }
+
+        assertNotNull(handler.getMessage());
+        assertEquals("testValue", handler.getMessage().getPayload().getTestPayload().getStringProperty());
+        assertEquals(12, handler.getMessage().getPayload().getTestPayload().getIntProperty());
     }
 
     @SpringBootApplication
     @Configuration
     public static class TestConfiguration {
-        @Component
-        public static class TestHandler extends AbstractMessageHandler<TestPayload> {
-            private TestPayload payload;
-
-            public TestHandler() {
-                super(TestPayload.class);
-            }
-
-            @Override
-            public void handleMessage(TestPayload payload, Message originalMessage) {
-                this.payload = payload;
-            }
-
-            TestPayload getPayload() {
-                return payload;
-            }
+        @Bean
+        public TestHandler<ComplexTestPayload> testPayloadMessageHandler() {
+            return new TestHandler<>(ComplexTestPayload.class);
         }
 
         @Bean
-        public MessageConsumerConfiguration messageConsumerConfiguration(TestHandler testHandler) {
-            return new MessageConsumerConfiguration()
-                .addHandler(TEST_MSG_TYPE, testHandler);
+        public MessageConsumerConfiguration messageConsumerConfiguration(TestHandler<ComplexTestPayload> handler) {
+            return new MessageConsumerConfiguration().addHandler(TEST_MSG_TYPE, handler);
         }
     }
 
     @Data
     @NoArgsConstructor
+    private static class ComplexTestPayload {
+        private TestPayload testPayload;
+    }
+
+    @Data
+    @NoArgsConstructor
     private static class TestPayload {
-        private String testProperty;
+        private String stringProperty;
+        private int intProperty;
     }
 }
