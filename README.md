@@ -85,7 +85,7 @@ dependencies {
 }
 ```
 
-Minimal `pom.xml` file might look like [this](#minimal-pom-xml-file-example).
+Minimal `pom.xml` file might look like [this](#minimal-pomxml-file-example).
 
 First we create a payload class (we use [Lombok](https://projectlombok.org/) library to simplify the example):
 
