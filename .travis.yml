@@ -35,11 +35,7 @@ after_success:
 
 jobs:
   include:
-    - stage: deploy to packagecloud.io
+    - stage: deploy
+      if: (branch = master OR tag IS present) AND type IN (push, api)
       jdk: oraclejdk8
-      script: echo "Deploying to packagecloud.io ..."
-      deploy:
-        provider: script
-        script: 'cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy -DskipTests=true'
-        on:
-          condition: $TRAVIS_PULL_REQUEST == “false” && $TRAVIS_BRANCH == “master” || -n ${TRAVIS_TAG+x}
+      script: 'cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy -DskipTests=true'

@@ -101,6 +101,23 @@ public class RequestAwareMessageConsumerTest {
         assertNotNull(listener.getError());
     }
 
+    @Test
+    public void customContextResponseNotRequest() {
+        Message<?> message = Message.builder()
+            .type("test.message")
+            .payload(TextNode.valueOf("testPayload"))
+            .context(Collections.singletonMap("testContextProperty", "testContextValue"))
+            .responseTo(UUID.randomUUID())
+            .build();
+        TestHandler<String> testHandler = new TestHandler<>(String.class);
+        consumer.addHandler("test.message", testHandler);
+        consumer.handleMessage(message);
+
+        assertNotNull(testHandler.getMessage());
+        assertEquals("testPayload", testHandler.getMessage().getPayload());
+        assertEquals("testContextValue", testHandler.getMessage().getContext().get("testContextProperty"));
+    }
+
     private static class TestListener <T> implements ResponseListener <T> {
         private Message<T> response;
         private Throwable error;
