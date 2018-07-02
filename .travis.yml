@@ -48,3 +48,4 @@ jobs:
         local-dir: javadoc
         skip-cleanup: true
         github-token: $GITHUB_API_KEY
+        target-branch: gh-pages
