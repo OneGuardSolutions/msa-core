@@ -67,8 +67,7 @@ public class MessageProducer {
      * @param routingKey AMQP message routing key
      */
     public void sendToInstance(String serviceName, String instanceId, Message message, String routingKey) {
-        message.setIssuer(currentInstance);
-        template.convertAndSend(Utils.instanceTopic(serviceName, instanceId), routingKey, message);
+        sendToExchange(Utils.instanceTopic(serviceName, instanceId), message, routingKey);
     }
 
     /**
@@ -89,11 +88,7 @@ public class MessageProducer {
      * @param routingKey AMQP message routing key
      */
     public void sendToService(String serviceName, Message message, String routingKey) {
-        if (message.getId() == null) {
-            message.setId(UUID.randomUUID());
-        }
-        message.setIssuer(currentInstance);
-        template.convertAndSend(Utils.serviceTopic(serviceName), routingKey, message);
+        sendToExchange(Utils.serviceTopic(serviceName), message, routingKey);
     }
 
     /**
@@ -133,5 +128,13 @@ public class MessageProducer {
         } else {
             sendToService(requestMessage.getIssuer().getService(), response);
         }
+    }
+
+    private void sendToExchange(String exchangeName, Message message, String routingKey) {
+        if (message.getId() == null) {
+            message.setId(UUID.randomUUID());
+        }
+        message.setIssuer(currentInstance);
+        template.convertAndSend(exchangeName, routingKey, message);
     }
 }

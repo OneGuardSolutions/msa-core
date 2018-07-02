@@ -51,6 +51,7 @@ public class MessageProducerTest {
 
         verify(template).convertAndSend(Utils.serviceTopic(TEST_SERVICE), message.getType(), message);
         assertSame(currentInstance, message.getIssuer());
+        assertNotNull(message.getId());
     }
 
     @Test
@@ -59,6 +60,7 @@ public class MessageProducerTest {
 
         verify(template).convertAndSend(Utils.serviceTopic(TEST_SERVICE), ROUTING_KEY, message);
         assertSame(currentInstance, message.getIssuer());
+        assertNotNull(message.getId());
     }
 
     @Test
@@ -68,6 +70,7 @@ public class MessageProducerTest {
 
         verify(template).convertAndSend(Utils.instanceTopic(instance), message.getType(), message);
         assertSame(currentInstance, message.getIssuer());
+        assertNotNull(message.getId());
     }
 
     @Test
@@ -77,6 +80,7 @@ public class MessageProducerTest {
 
         verify(template).convertAndSend(Utils.instanceTopic(instance), ROUTING_KEY, message);
         assertSame(currentInstance, message.getIssuer());
+        assertNotNull(message.getId());
     }
 
     @Test
@@ -85,6 +89,7 @@ public class MessageProducerTest {
 
         verify(template).convertAndSend(Utils.instanceTopic(TEST_SERVICE, TEST_INSTANCE), message.getType(), message);
         assertSame(currentInstance, message.getIssuer());
+        assertNotNull(message.getId());
     }
 
     @Test
@@ -93,6 +98,7 @@ public class MessageProducerTest {
 
         verify(template).convertAndSend(Utils.instanceTopic(TEST_SERVICE, TEST_INSTANCE), ROUTING_KEY, message);
         assertSame(currentInstance, message.getIssuer());
+        assertNotNull(message.getId());
     }
 
     @Test
@@ -105,12 +111,13 @@ public class MessageProducerTest {
         MessageProducer producer = spy(this.producer);
         //noinspection unchecked
         ArgumentCaptor<Message<String>> messageCaptor = ArgumentCaptor.forClass(Message.class);
-        doNothing().when(producer).sendToInstance(eq(currentInstance), messageCaptor.capture());
+        doCallRealMethod().when(producer).sendToInstance(eq(currentInstance), messageCaptor.capture());
 
         producer.sendResponse(message, "test.response", "testResponsePayload");
 
         Message<String> response = messageCaptor.getValue();
         assertNotNull(response);
+        assertNotNull(response.getId());
         assertEquals("test.response", response.getType());
         assertEquals(context, response.getContext());
         assertEquals(message.getId(), response.getResponseTo());
@@ -127,12 +134,13 @@ public class MessageProducerTest {
         MessageProducer producer = spy(this.producer);
         //noinspection unchecked
         ArgumentCaptor<Message<String>> messageCaptor = ArgumentCaptor.forClass(Message.class);
-        doNothing().when(producer).sendToService(eq(currentInstance.getService()), messageCaptor.capture());
+        doCallRealMethod().when(producer).sendToService(eq(currentInstance.getService()), messageCaptor.capture());
 
         producer.sendResponse(message, "test.response", "testResponsePayload");
 
         Message<String> response = messageCaptor.getValue();
         assertNotNull(response);
+        assertNotNull(response.getId());
         assertEquals("test.response", response.getType());
         assertEquals(context, response.getContext());
         assertEquals(message.getId(), response.getResponseTo());
