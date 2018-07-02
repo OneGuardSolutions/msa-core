@@ -30,14 +30,17 @@ public class SimpleMessageConsumer implements MessageConsumer {
         this.objectMapper = objectMapper;
     }
 
+    @Override
     public void addHandler(String pattern, MessageHandler handler) {
         this.handlers.add(new MessageHandlerMapping(pattern, handler));
     }
 
+    @Override
     public void setDefaultHandler(MessageHandler defaultHandler) {
         this.defaultHandler = defaultHandler;
     }
 
+    @Override
     public void handleMessage(Message<?> message) {
         MessageHandler handler = handlers.stream().filter(
             mapping -> mapping.getPattern().matches(message.getType())

@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class RequestProducer {
+    /** Context key, that is used for storing the request ID. */
     public static final String REQUEST_ID_CONTEXT_KEY = "requestId";
 
     private final MessageProducer producer;
@@ -29,10 +30,29 @@ public class RequestProducer {
         this.consumer = Objects.requireNonNull(consumer);
     }
 
+    /**
+     * Creates a {@link Mono} that send a request on subscription and completes with response on receiving it.
+     *
+     * @param responsePayloadClass class to map response payload to
+     * @param serviceName name of service, that should handle the request
+     * @param message the message
+     * @param <T> type of response payload
+     * @return the request Mono
+     */
     public <T> Mono<Message<T>> request(Class<T> responsePayloadClass, String serviceName, Message<?> message) {
         return request(responsePayloadClass, serviceName, message, message.getType());
     }
 
+    /**
+     * Creates a {@link Mono} that send a request on subscription and completes with response on receiving it.
+     *
+     * @param responsePayloadClass class to map response payload to
+     * @param serviceName name of service, that should handle the request
+     * @param message the message
+     * @param routingKey message routing key
+     * @param <T> type of response payload
+     * @return the request Mono
+     */
     public <T> Mono<Message<T>> request(
         Class<T> responsePayloadClass,
         String serviceName,
@@ -55,8 +75,8 @@ public class RequestProducer {
                     }
 
                     @Override
-                    public void onError(Throwable t) {
-                        monoSink.error(t);
+                    public void onError(Throwable throwable) {
+                        monoSink.error(throwable);
                     }
                 },
                 responsePayloadClass

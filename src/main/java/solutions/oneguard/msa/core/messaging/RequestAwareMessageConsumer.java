@@ -51,11 +51,12 @@ public class RequestAwareMessageConsumer extends SimpleMessageConsumer {
             Message response = convertMessage(message, responseListenerPayloadClassPair.getT2());
             //noinspection unchecked
             listener.onResponseReceived(response);
-        } catch (Throwable t) {
-            listener.onError(t);
+        } catch (Throwable throwable) {
+            listener.onError(throwable);
         }
     }
 
+    @Override
     public void handleMessage(Message<?> message) {
         String requestIdAsString = extractRequestIdAsString(message);
         if (requestIdAsString != null) {

@@ -2,6 +2,8 @@ language: java
 sudo: false
 
 jdk:
+  - oraclejdk8
+  - openjdk8
   - oraclejdk9
   - oraclejdk10
   - openjdk10
@@ -24,17 +26,20 @@ env:
 services:
   - rabbitmq
 
-install: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -P travis
+install: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -P coveralls
 
-script: travis_retry mvn verify -B -P travis
+script: travis_retry mvn verify -B -P coveralls
 
 after_success:
-  - mvn jacoco:report coveralls:report -P travis
+  - mvn jacoco:report coveralls:report -P coveralls
 
-deploy:
-  provider: script
-  script: 'cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy -DskipTests=true'
-  skip_cleanup: true
-  on:
-    jdk: 'oraclejdk9'
-    condition: $TRAVIS_PULL_REQUEST == “false” && $TRAVIS_BRANCH == “master” ||  -n ${TRAVIS_TAG+x}
+jobs:
+  include:
+    - stage: deploy to packagecloud.io
+      jdk: oraclejdk8
+      script: echo "Deploying to packagecloud.io ..."
+      deploy:
+        provider: script
+        script: 'cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy -DskipTests=true'
+        on:
+          condition: $TRAVIS_PULL_REQUEST == “false” && $TRAVIS_BRANCH == “master” || -n ${TRAVIS_TAG+x}

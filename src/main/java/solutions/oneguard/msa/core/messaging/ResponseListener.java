@@ -24,7 +24,7 @@ interface ResponseListener <T> {
      *
      * <p>Cancelling the request also causes an error.</p>
      *
-     * @param t cause
+     * @param throwable the cause
      */
-    void onError(Throwable t);
+    void onError(Throwable throwable);
 }

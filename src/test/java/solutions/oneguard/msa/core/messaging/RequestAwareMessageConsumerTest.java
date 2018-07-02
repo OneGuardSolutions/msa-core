@@ -111,8 +111,8 @@ public class RequestAwareMessageConsumerTest {
         }
 
         @Override
-        public void onError(Throwable t) {
-            error = t;
+        public void onError(Throwable throwable) {
+            error = throwable;
         }
 
         Message<T> getResponse() {

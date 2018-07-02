@@ -26,27 +26,68 @@ public class MessageProducer {
         this.currentInstance = currentInstance;
     }
 
+    /**
+     * Sends a message to the specified service instance exchange.
+     *
+     * @param instance target service instance representation
+     * @param message the message to send
+     */
     public void sendToInstance(Instance instance, Message message) {
         sendToInstance(instance, message, message.getType());
     }
 
+    /**
+     * Sends a message to the specified service instance exchange.
+     *
+     * @param instance target service instance representation
+     * @param message the message to send
+     * @param routingKey AMQP message routing key
+     */
     public void sendToInstance(Instance instance, Message message, String routingKey) {
         sendToInstance(instance.getService(), instance.getId().toString(), message, routingKey);
     }
 
+    /**
+     * Sends a message to the specified service instance exchange.
+     *
+     * @param serviceName service name
+     * @param instanceId instance ID
+     * @param message the message to send
+     */
     public void sendToInstance(String serviceName, String instanceId, Message message) {
         sendToInstance(serviceName, instanceId, message, message.getType());
     }
 
+    /**
+     * Sends a message to the specified service instance exchange.
+     *
+     * @param serviceName service name
+     * @param instanceId instance ID
+     * @param message the message to send
+     * @param routingKey AMQP message routing key
+     */
     public void sendToInstance(String serviceName, String instanceId, Message message, String routingKey) {
         message.setIssuer(currentInstance);
         template.convertAndSend(Utils.instanceTopic(serviceName, instanceId), routingKey, message);
     }
 
+    /**
+     * Sends a message to the specified service exchange.
+     *
+     * @param serviceName service name
+     * @param message the message to send
+     */
     public void sendToService(String serviceName, Message message) {
         sendToService(serviceName, message, message.getType());
     }
 
+    /**
+     * Sends a message to the specified service exchange.
+     *
+     * @param serviceName service name
+     * @param message the message to send
+     * @param routingKey AMQP message routing key
+     */
     public void sendToService(String serviceName, Message message, String routingKey) {
         if (message.getId() == null) {
             message.setId(UUID.randomUUID());
@@ -55,6 +96,29 @@ public class MessageProducer {
         template.convertAndSend(Utils.serviceTopic(serviceName), routingKey, message);
     }
 
+    /**
+     * Construct response to the a message with specified response and sends it to the original message issuer.
+     *
+     * <p>
+     *     Response message is constructed in compliance with
+     *     <a href="https://github.com/OneGuardSolutions/msa-interservice-communication-protocol-specification">
+     *         inter-service communication protocol specification
+     *     </a>.
+     *     <ul>
+     *         <li>{@link Message#principal} is copied from original message</li>
+     *         <li>{@link Message#context} is copied from original message</li>
+     *         <li>{@link Message#responseTo} is filled with original message ID</li>
+     *     </ul>
+     * </p>
+     *
+     * <p>Original message's property {@link Message#respondToInstance} is taken into account,
+     * and response is sent either to the issuing instance or service exchange accordingly.</p>
+     *
+     * @param requestMessage original message to construct a response from
+     * @param messageType response message type
+     * @param payload response message payload
+     * @param <T> type of response message payload
+     */
     public <T> void sendResponse(Message<?> requestMessage, String messageType, T payload) {
         Message<T> response = Message.<T>builder()
             .type(messageType)
